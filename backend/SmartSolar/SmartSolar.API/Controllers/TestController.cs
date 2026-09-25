@@ -2,10 +2,11 @@
  * Module: SE4040 - Enterprise Application Development
  * Project: Smart Solar Microgrid Trading System
  * File: TestController.cs
- * Description: Provides endpoints used to verify API and database connectivity.
+ * Description: Provides endpoints used to verify API and MongoDB connectivity.
  */
 
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using SmartSolar.API.Services;
 
 namespace SmartSolar.API.Controllers
@@ -22,7 +23,7 @@ namespace SmartSolar.API.Controllers
             _mongoDbService = mongoDbService;
         }
 
-        // Returns a response proving that the ASP.NET Core API is running.
+        // Checks whether the ASP.NET Core Web API is running.
         [HttpGet]
         public IActionResult GetApiStatus()
         {
@@ -33,17 +34,18 @@ namespace SmartSolar.API.Controllers
             });
         }
 
-        // Tests whether the Web API can successfully communicate with MongoDB.
+        // Checks whether the Web API can communicate with MongoDB.
         [HttpGet("database")]
         public async Task<IActionResult> GetDatabaseStatus()
         {
             try
             {
-                bool connected = await _mongoDbService.CheckConnectionAsync();
+                bool connected =
+                    await _mongoDbService.CheckConnectionAsync();
 
                 return Ok(new
                 {
-                    connected,
+                    connected = connected,
                     message = "MongoDB connection successful."
                 });
             }
@@ -53,6 +55,53 @@ namespace SmartSolar.API.Controllers
                 {
                     connected = false,
                     message = "MongoDB connection failed.",
+                    error = exception.Message
+                });
+            }
+        }
+
+        // Retrieves MongoDB collection names and verifies the required collections.
+        [HttpGet("collections")]
+        public async Task<IActionResult> GetDatabaseCollections()
+        {
+            try
+            {
+                var database = _mongoDbService.GetDatabase();
+
+                var collectionNames = await database
+                    .ListCollectionNames()
+                    .ToListAsync();
+
+                string[] requiredCollections =
+                {
+                    "UserDetails",
+                    "SolarStationInfo",
+                    "EnergyBookingSlots",
+                    "EnergyReservation"
+                };
+
+                bool allCollectionsExist =
+                    requiredCollections.All(
+                        name => collectionNames.Contains(name)
+                    );
+
+                return Ok(new
+                {
+                    databaseName =
+                        database.DatabaseNamespace.DatabaseName,
+
+                    allCollectionsExist = allCollectionsExist,
+
+                    collections = collectionNames
+                });
+            }
+            catch (Exception exception)
+            {
+                return StatusCode(500, new
+                {
+                    message =
+                        "Failed to retrieve MongoDB collections.",
+
                     error = exception.Message
                 });
             }

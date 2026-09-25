@@ -2,12 +2,13 @@
  * Module: SE4040 - Enterprise Application Development
  * Project: Smart Solar Microgrid Trading System
  * File: MongoDbService.cs
- * Description: Creates and maintains the connection between the Web API and MongoDB.
+ * Description: Manages the MongoDB connection and provides access to application collections.
  */
 
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using SmartSolar.API.Models;
 using SmartSolar.API.Settings;
 
 namespace SmartSolar.API.Services
@@ -16,15 +17,39 @@ namespace SmartSolar.API.Services
     {
         private readonly IMongoDatabase _database;
 
-        // Initializes the MongoDB client using configuration from appsettings.json.
+        // Initializes the MongoDB connection using the configured connection string.
         public MongoDbService(IOptions<MongoDbSettings> settings)
         {
-            MongoClient client = new MongoClient(settings.Value.ConnectionString);
+            MongoClient client = new MongoClient(
+                settings.Value.ConnectionString
+            );
 
-            _database = client.GetDatabase(settings.Value.DatabaseName);
+            _database = client.GetDatabase(
+                settings.Value.DatabaseName
+            );
         }
 
-        // Checks whether the API can successfully communicate with MongoDB.
+        // Provides access to the system users collection.
+        public IMongoCollection<User> Users =>
+            _database.GetCollection<User>("UserDetails");
+
+
+        // Provides access to the solar stations collection.
+        public IMongoCollection<SolarStation> Stations =>
+            _database.GetCollection<SolarStation>("SolarStationInfo");
+
+
+        // Provides access to the energy booking slots collection.
+        public IMongoCollection<EnergyBookingSlot> BookingSlots =>
+            _database.GetCollection<EnergyBookingSlot>("EnergyBookingSlots");
+
+
+        // Provides access to the energy reservations collection.
+        public IMongoCollection<EnergyReservation> Reservations =>
+            _database.GetCollection<EnergyReservation>("EnergyReservation");
+
+
+        // Checks whether the MongoDB server is reachable.
         public async Task<bool> CheckConnectionAsync()
         {
             await _database.RunCommandAsync<BsonDocument>(
@@ -34,7 +59,7 @@ namespace SmartSolar.API.Services
             return true;
         }
 
-        // Provides access to the configured MongoDB database for application services.
+        // Returns the configured MongoDB database.
         public IMongoDatabase GetDatabase()
         {
             return _database;
