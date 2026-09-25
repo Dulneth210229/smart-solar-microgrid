@@ -5,31 +5,112 @@
  * Description: Configures and starts the ASP.NET Core Web API.
  */
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using SmartSolar.API.Services;
 using SmartSolar.API.Settings;
+using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register controller support for the Web API.
+// Register controller support.
 builder.Services.AddControllers();
 
-// Register API endpoint discovery required by Swagger.
+// Register Swagger/OpenAPI support.
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "JWT Authorization header using the Bearer scheme."
+    });
 
-// Register Swagger documentation generation.
-builder.Services.AddSwaggerGen();
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("bearer", document)] = []
+    });
+});
 
-// Load MongoDB settings from appsettings.json.
+// Load MongoDB configuration.
 builder.Services.Configure<MongoDbSettings>(
     builder.Configuration.GetSection("MongoDbSettings")
 );
 
-// Register a single MongoDB service for the lifetime of the application.
+// Load JWT configuration.
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection("JwtSettings")
+);
+
+// Register application services.
 builder.Services.AddSingleton<MongoDbService>();
+builder.Services.AddSingleton<JwtTokenService>();
+builder.Services.AddSingleton<AuthService>();
+builder.Services.AddSingleton<UserService>();
+builder.Services.AddSingleton<DatabaseSeeder>();
+
+var jwtSettings = builder.Configuration
+    .GetSection("JwtSettings")
+    .Get<JwtSettings>()
+    ?? throw new InvalidOperationException(
+        "JWT settings are missing."
+    );
+
+// Configure JWT authentication.
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme =
+            JwtBearerDefaults.AuthenticationScheme;
+
+        options.DefaultChallengeScheme =
+            JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+
+                ValidIssuer = jwtSettings.Issuer,
+                ValidAudience = jwtSettings.Audience,
+
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(
+                            jwtSettings.SecretKey
+                        )
+                    ),
+
+                ClockSkew = TimeSpan.Zero
+            };
+    });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Enable Swagger only while the application is running in development mode.
+// Create required MongoDB indexes.
+var mongoDbService =
+    app.Services.GetRequiredService<MongoDbService>();
+
+await mongoDbService.CreateIndexesAsync();
+
+// Create required initial development data.
+var databaseSeeder =
+    app.Services.GetRequiredService<DatabaseSeeder>();
+
+await databaseSeeder.SeedAsync();
+
+// Enable Swagger during development.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -39,11 +120,13 @@ if (app.Environment.IsDevelopment())
 // Redirect HTTP requests to HTTPS.
 app.UseHttpsRedirection();
 
-// Enable authorization middleware.
+// Authentication must execute before authorization.
+app.UseAuthentication();
+
 app.UseAuthorization();
 
-// Map controller routes such as /api/test.
+// Map API controllers.
 app.MapControllers();
 
-// Start the Web API.
+// Start the application.
 app.Run();

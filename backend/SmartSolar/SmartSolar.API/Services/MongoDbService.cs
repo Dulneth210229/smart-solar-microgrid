@@ -64,5 +64,34 @@ namespace SmartSolar.API.Services
         {
             return _database;
         }
+
+        // Creates unique database indexes for important user identifiers.
+        public async Task CreateIndexesAsync()
+        {
+            var emailIndex = new CreateIndexModel<User>(
+                Builders<User>.IndexKeys.Ascending(user => user.Email),
+                new CreateIndexOptions
+                {
+                    Unique = true
+                }
+            );
+
+            var nicIndex = new CreateIndexModel<User>(
+                Builders<User>.IndexKeys.Ascending(user => user.Nic),
+                new CreateIndexOptions
+                {
+                    Unique = true,
+                    Sparse = true
+                }
+            );
+
+            await Users.Indexes.CreateManyAsync(
+                new[]
+                {
+            emailIndex,
+            nicIndex
+                }
+            );
+        }
     }
 }

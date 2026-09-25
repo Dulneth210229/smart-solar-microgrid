@@ -14,6 +14,7 @@ namespace SmartSolar.API.Models
         [BsonId]
         public string Id { get; set; } = string.Empty;
 
+        [BsonIgnoreIfNull]
         public string? Nic { get; set; }
 
         public string FullName { get; set; } = string.Empty;
