@@ -52,6 +52,7 @@ builder.Services.AddSingleton<JwtTokenService>();
 builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<DatabaseSeeder>();
+builder.Services.AddSingleton<SolarStationService>();
 
 var jwtSettings = builder.Configuration
     .GetSection("JwtSettings")
