@@ -92,6 +92,18 @@ namespace SmartSolar.API.Services
             nicIndex
                 }
             );
+
+            var bookingSlotIndex =
+              new CreateIndexModel<EnergyBookingSlot>(
+                  Builders<EnergyBookingSlot>
+                      .IndexKeys
+                      .Ascending(slot => slot.StationId)
+                      .Ascending(slot => slot.StartTimeUtc)
+              );
+
+            await BookingSlots.Indexes.CreateOneAsync(
+                bookingSlotIndex
+            );
         }
     }
 }
