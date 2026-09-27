@@ -2,7 +2,7 @@
  * Module: SE4040 - Enterprise Application Development
  * Project: Smart Solar Microgrid Trading System
  * File: EnergyReservation.cs
- * Description: Represents an energy transfer reservation created by a prosumer.
+ * Description: Represents an energy transfer reservation created by a Prosumer.
  */
 
 using MongoDB.Bson;
@@ -30,12 +30,14 @@ namespace SmartSolar.API.Models
 
         public string Status { get; set; } = "PENDING";
 
+        [BsonIgnoreIfNull]
         public string? QrToken { get; set; }
 
         public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
 
         public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
 
+        [BsonIgnoreIfNull]
         public DateTime? CompletedAtUtc { get; set; }
     }
 }

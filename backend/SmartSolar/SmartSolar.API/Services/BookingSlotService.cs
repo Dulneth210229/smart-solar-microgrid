@@ -46,12 +46,14 @@ namespace SmartSolar.API.Services
             }
 
             DateTime nowUtc = DateTime.UtcNow;
+            DateTime sevenDaysFromNowUtc = nowUtc.AddDays(7);
 
             return await _mongoDbService.BookingSlots
                 .Find(slot =>
                     slot.StationId == stationId &&
                     slot.IsActive &&
-                    slot.StartTimeUtc > nowUtc)
+                    slot.StartTimeUtc > nowUtc &&
+                    slot.StartTimeUtc <= sevenDaysFromNowUtc)
                 .SortBy(slot => slot.StartTimeUtc)
                 .ToListAsync();
         }

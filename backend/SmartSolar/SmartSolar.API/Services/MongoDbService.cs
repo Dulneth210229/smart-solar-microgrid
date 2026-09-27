@@ -104,6 +104,74 @@ namespace SmartSolar.API.Services
             await BookingSlots.Indexes.CreateOneAsync(
                 bookingSlotIndex
             );
+
+            var reservationProsumerIndex =
+    new CreateIndexModel<EnergyReservation>(
+        Builders<EnergyReservation>
+            .IndexKeys
+            .Ascending(
+                reservation =>
+                    reservation.ProsumerNic
+            )
+            .Descending(
+                reservation =>
+                    reservation.CreatedAtUtc
+            )
+    );
+
+            var reservationSlotStatusIndex =
+                new CreateIndexModel<EnergyReservation>(
+                    Builders<EnergyReservation>
+                        .IndexKeys
+                        .Ascending(
+                            reservation =>
+                                reservation.SlotId
+                        )
+                        .Ascending(
+                            reservation =>
+                                reservation.Status
+                        )
+                );
+
+            var reservationStationStatusIndex =
+                new CreateIndexModel<EnergyReservation>(
+                    Builders<EnergyReservation>
+                        .IndexKeys
+                        .Ascending(
+                            reservation =>
+                                reservation.StationId
+                        )
+                        .Ascending(
+                            reservation =>
+                                reservation.Status
+                        )
+                );
+
+            var qrTokenIndex =
+                new CreateIndexModel<EnergyReservation>(
+                    Builders<EnergyReservation>
+                        .IndexKeys
+                        .Ascending(
+                            reservation =>
+                                reservation.QrToken
+                        ),
+
+                    new CreateIndexOptions
+                    {
+                        Unique = true,
+                        Sparse = true
+                    }
+                );
+
+            await Reservations.Indexes.CreateManyAsync(
+                new[]
+                {
+        reservationProsumerIndex,
+        reservationSlotStatusIndex,
+        reservationStationStatusIndex,
+        qrTokenIndex
+                }
+            );
         }
     }
 }
