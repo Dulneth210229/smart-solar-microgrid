@@ -356,5 +356,90 @@ namespace SmartSolar.API.Controllers
                 });
             }
         }
+        // Returns the authenticated Prosumer's current bookings.
+        [HttpGet("my/current")]
+        [Authorize(Roles = UserRoles.Prosumer)]
+        public async Task<IActionResult> GetCurrentBookings()
+        {
+            string? userId =
+                User.FindFirstValue(
+                    ClaimTypes.NameIdentifier
+                );
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized();
+            }
+
+            var bookings =
+                await _reservationService
+                    .GetCurrentReservationsAsync(userId);
+
+            return Ok(bookings);
+        }
+
+        // Returns booking history for the authenticated Prosumer.
+        [HttpGet("my/history")]
+        [Authorize(Roles = UserRoles.Prosumer)]
+        public async Task<IActionResult> GetBookingHistory()
+        {
+            string? userId =
+                User.FindFirstValue(
+                    ClaimTypes.NameIdentifier
+                );
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized();
+            }
+
+            var bookings =
+                await _reservationService
+                    .GetBookingHistoryAsync(userId);
+
+            return Ok(bookings);
+        }
+
+        // Searches and filters the authenticated Prosumer's bookings.
+        [HttpGet("my/search")]
+        [Authorize(Roles = UserRoles.Prosumer)]
+        public async Task<IActionResult> SearchBookings(
+            [FromQuery] string? status,
+            [FromQuery] string? search,
+            [FromQuery] DateTimeOffset? fromDate,
+            [FromQuery] DateTimeOffset? toDate)
+        {
+            string? userId =
+                User.FindFirstValue(
+                    ClaimTypes.NameIdentifier
+                );
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                var bookings =
+                    await _reservationService
+                        .SearchMyReservationsAsync(
+                            userId,
+                            status,
+                            search,
+                            fromDate,
+                            toDate
+                        );
+
+                return Ok(bookings);
+            }
+            catch (InvalidOperationException exception)
+            {
+                return BadRequest(new
+                {
+                    message = exception.Message
+                });
+            }
+        }
     }
 }

@@ -55,6 +55,7 @@ builder.Services.AddSingleton<DatabaseSeeder>();
 builder.Services.AddSingleton<SolarStationService>();
 builder.Services.AddSingleton<BookingSlotService>();
 builder.Services.AddSingleton<ReservationService>();
+builder.Services.AddSingleton<TransactionService>();
 
 var jwtSettings = builder.Configuration
     .GetSection("JwtSettings")

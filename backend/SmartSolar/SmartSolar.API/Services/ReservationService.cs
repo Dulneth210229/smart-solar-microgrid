@@ -729,5 +729,239 @@ namespace SmartSolar.API.Services
                 );
             }
         }
+
+        // Returns future pending and approved reservations belonging to a Prosumer.
+        public async Task<List<ReservationResponse>>
+            GetCurrentReservationsAsync(string prosumerNic)
+        {
+            var allReservations =
+                await GetMyReservationsAsync(prosumerNic);
+
+            DateTime nowUtc = DateTime.UtcNow;
+
+            return allReservations
+                .Where(reservation =>
+                    reservation.EndTimeUtc > nowUtc &&
+                    (
+                        reservation.Status ==
+                            ReservationStatuses.Pending ||
+                        reservation.Status ==
+                            ReservationStatuses.Approved
+                    ))
+                .OrderBy(reservation =>
+                    reservation.StartTimeUtc)
+                .ToList();
+        }
+
+        // Returns completed, cancelled and past reservations for booking history.
+        public async Task<List<ReservationResponse>>
+            GetBookingHistoryAsync(string prosumerNic)
+        {
+            var allReservations =
+                await GetMyReservationsAsync(prosumerNic);
+
+            DateTime nowUtc = DateTime.UtcNow;
+
+            return allReservations
+                .Where(reservation =>
+                    reservation.Status ==
+                        ReservationStatuses.Completed ||
+
+                    reservation.Status ==
+                        ReservationStatuses.Cancelled ||
+
+                    reservation.EndTimeUtc < nowUtc)
+                .OrderByDescending(reservation =>
+                    reservation.StartTimeUtc)
+                .ToList();
+        }
+
+        // Searches and filters bookings belonging to a Prosumer.
+        public async Task<List<ReservationResponse>>
+            SearchMyReservationsAsync(
+                string prosumerNic,
+                string? status,
+                string? search,
+                DateTimeOffset? fromDate,
+                DateTimeOffset? toDate)
+        {
+            var reservations =
+                await GetMyReservationsAsync(prosumerNic);
+
+            IEnumerable<ReservationResponse> result =
+                reservations;
+
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                string normalizedStatus =
+                    status.Trim().ToUpperInvariant();
+
+                string[] validStatuses =
+                {
+            ReservationStatuses.Pending,
+            ReservationStatuses.Approved,
+            ReservationStatuses.Cancelled,
+            ReservationStatuses.Completed
+        };
+
+                if (!validStatuses.Contains(normalizedStatus))
+                {
+                    throw new InvalidOperationException(
+                        "Invalid reservation status filter."
+                    );
+                }
+
+                result = result.Where(reservation =>
+                    reservation.Status == normalizedStatus);
+            }
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                string normalizedSearch =
+                    search.Trim();
+
+                result = result.Where(reservation =>
+                    reservation.StationName.Contains(
+                        normalizedSearch,
+                        StringComparison.OrdinalIgnoreCase
+                    )
+                    ||
+                    reservation.TransferType.Contains(
+                        normalizedSearch,
+                        StringComparison.OrdinalIgnoreCase
+                    )
+                    ||
+                    reservation.Status.Contains(
+                        normalizedSearch,
+                        StringComparison.OrdinalIgnoreCase
+                    ));
+            }
+
+            if (fromDate.HasValue)
+            {
+                DateTime fromUtc =
+                    fromDate.Value.UtcDateTime;
+
+                result = result.Where(reservation =>
+                    reservation.StartTimeUtc >= fromUtc);
+            }
+
+            if (toDate.HasValue)
+            {
+                DateTime toUtc =
+                    toDate.Value.UtcDateTime;
+
+                result = result.Where(reservation =>
+                    reservation.StartTimeUtc <= toUtc);
+            }
+
+            return result
+                .OrderByDescending(reservation =>
+                    reservation.StartTimeUtc)
+                .ToList();
+        }
+
+        // Calculates booking statistics for the Prosumer dashboard.
+        public async Task<ProsumerDashboardResponse>
+            GetProsumerDashboardAsync(string prosumerNic)
+        {
+            var reservations =
+                await GetMyReservationsAsync(prosumerNic);
+
+            DateTime nowUtc = DateTime.UtcNow;
+
+            return new ProsumerDashboardResponse
+            {
+                CurrentReservations =
+                    reservations.Count(reservation =>
+                        reservation.EndTimeUtc > nowUtc &&
+                        (
+                            reservation.Status ==
+                                ReservationStatuses.Pending ||
+                            reservation.Status ==
+                                ReservationStatuses.Approved
+                        )),
+
+                PendingReservations =
+                    reservations.Count(reservation =>
+                        reservation.Status ==
+                            ReservationStatuses.Pending &&
+                        reservation.StartTimeUtc > nowUtc),
+
+                ApprovedFutureReservations =
+                    reservations.Count(reservation =>
+                        reservation.Status ==
+                            ReservationStatuses.Approved &&
+                        reservation.StartTimeUtc > nowUtc),
+
+                CompletedReservations =
+                    reservations.Count(reservation =>
+                        reservation.Status ==
+                            ReservationStatuses.Completed),
+
+                CancelledReservations =
+                    reservations.Count(reservation =>
+                        reservation.Status ==
+                            ReservationStatuses.Cancelled)
+            };
+        }
+
+        // Calculates operational statistics for Backoffice and Grid Operator dashboards.
+        public async Task<StaffDashboardResponse>
+            GetStaffDashboardAsync()
+        {
+            DateTime nowUtc = DateTime.UtcNow;
+
+            int pending =
+                (int)await _mongoDbService.Reservations
+                    .CountDocumentsAsync(reservation =>
+                        reservation.Status ==
+                            ReservationStatuses.Pending);
+
+            var approvedReservations =
+                await _mongoDbService.Reservations
+                    .Find(reservation =>
+                        reservation.Status ==
+                            ReservationStatuses.Approved)
+                    .ToListAsync();
+
+            int approvedFuture = 0;
+
+            foreach (var reservation in approvedReservations)
+            {
+                var slot =
+                    await _mongoDbService.BookingSlots
+                        .Find(item =>
+                            item.Id ==
+                            reservation.SlotId)
+                        .FirstOrDefaultAsync();
+
+                if (slot != null &&
+                    slot.StartTimeUtc > nowUtc)
+                {
+                    approvedFuture++;
+                }
+            }
+
+            int completed =
+                (int)await _mongoDbService.Reservations
+                    .CountDocumentsAsync(reservation =>
+                        reservation.Status ==
+                            ReservationStatuses.Completed);
+
+            int activeStations =
+                (int)await _mongoDbService.Stations
+                    .CountDocumentsAsync(station =>
+                        station.IsActive);
+
+            return new StaffDashboardResponse
+            {
+                PendingReservations = pending,
+                ApprovedFutureReservations =
+                    approvedFuture,
+                CompletedReservations = completed,
+                ActiveStations = activeStations
+            };
+        }
     }
 }
