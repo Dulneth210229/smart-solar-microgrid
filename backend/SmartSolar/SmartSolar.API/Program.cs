@@ -134,7 +134,14 @@ if (app.Environment.IsDevelopment())
 }
 
 // Redirect HTTP requests to HTTPS.
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+
+// Use HTTPS redirection outside the local development environment.
+// Android emulator development uses the HTTP endpoint.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseCors("ReactDevelopment");
 
