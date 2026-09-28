@@ -8,8 +8,11 @@ import DashboardLayout from "./layouts/DashboardLayout";
 
 import LoginPage from "./pages/LoginPage";
 import StaffDashboardPage from "./pages/StaffDashboardPage";
-import PlaceholderPage from "./pages/PlaceholderPage";
 
+import UsersPage from "./pages/UsersPage";
+import StationsPage from "./pages/StationsPage";
+import BookingSlotsPage from "./pages/BookingSlotsPage";
+import ReservationsPage from "./pages/ReservationsPage";
 function App() {
   return (
     <AuthProvider>
@@ -29,7 +32,7 @@ function App() {
             path="/users"
             element={
               <ProtectedRoute allowedRoles={["BACKOFFICE"]}>
-                <PlaceholderPage title="User Management" />
+                <UsersPage />
               </ProtectedRoute>
             }
           />
@@ -37,15 +40,28 @@ function App() {
           <Route
             path="/stations"
             element={
-              <ProtectedRoute allowedRoles={["BACKOFFICE"]}>
-                <PlaceholderPage title="Solar Stations" />
+              <ProtectedRoute allowedRoles={["BACKOFFICE", "GRID_OPERATOR"]}>
+                <StationsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/stations/:stationId/slots"
+            element={
+              <ProtectedRoute allowedRoles={["BACKOFFICE", "GRID_OPERATOR"]}>
+                <BookingSlotsPage />
               </ProtectedRoute>
             }
           />
 
           <Route
             path="/bookings"
-            element={<PlaceholderPage title="Reservations" />}
+            element={
+              <ProtectedRoute allowedRoles={["BACKOFFICE", "GRID_OPERATOR"]}>
+                <ReservationsPage />
+              </ProtectedRoute>
+            }
           />
         </Route>
 

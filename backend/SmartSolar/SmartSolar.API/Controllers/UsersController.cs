@@ -222,5 +222,46 @@ namespace SmartSolar.API.Controllers
                 });
             }
         }
+
+        // Returns all system users for Backoffice administration.
+        [HttpGet]
+        [Authorize(Roles = UserRoles.Backoffice)]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userService.GetAllUsersAsync();
+
+            return Ok(users.Select(user => new
+            {
+                user.Id,
+                user.Nic,
+                user.FullName,
+                user.Email,
+                user.PhoneNumber,
+                user.Role,
+                user.Status,
+                user.CreatedAtUtc,
+                user.UpdatedAtUtc
+            }));
+        }
+
+        // Returns Prosumer accounts waiting for deactivation approval.
+        [HttpGet("deactivation-requests")]
+        [Authorize(Roles = UserRoles.Backoffice)]
+        public async Task<IActionResult> GetDeactivationRequests()
+        {
+            var users =
+                await _userService.GetDeactivationRequestsAsync();
+
+            return Ok(users.Select(user => new
+            {
+                user.Id,
+                user.Nic,
+                user.FullName,
+                user.Email,
+                user.PhoneNumber,
+                user.Status,
+                user.CreatedAtUtc
+            }));
+        }
     }
 }

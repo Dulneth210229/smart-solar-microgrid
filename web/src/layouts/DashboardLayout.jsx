@@ -31,18 +31,16 @@ export default function DashboardLayout() {
             </NavLink>
 
             {user?.role === "BACKOFFICE" && (
-              <>
-                <NavLink to="/users" className="nav-link">
-                  <i className="bi bi-people me-2"></i>
-                  Users
-                </NavLink>
-
-                <NavLink to="/stations" className="nav-link">
-                  <i className="bi bi-lightning-charge me-2"></i>
-                  Stations
-                </NavLink>
-              </>
+              <NavLink to="/users" className="nav-link">
+                <i className="bi bi-people me-2"></i>
+                Users
+              </NavLink>
             )}
+
+            <NavLink to="/stations" className="nav-link">
+              <i className="bi bi-lightning-charge me-2"></i>
+              Stations
+            </NavLink>
 
             <NavLink to="/bookings" className="nav-link">
               <i className="bi bi-calendar-check me-2"></i>

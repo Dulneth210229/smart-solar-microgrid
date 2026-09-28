@@ -177,5 +177,25 @@ namespace SmartSolar.API.Services
 
             return user;
         }
+
+        // Returns all application users for Backoffice administration.
+        public async Task<List<User>> GetAllUsersAsync()
+        {
+            return await _mongoDbService.Users
+                .Find(_ => true)
+                .SortBy(user => user.FullName)
+                .ToListAsync();
+        }
+
+        // Returns Prosumer accounts waiting for deactivation approval.
+        public async Task<List<User>> GetDeactivationRequestsAsync()
+        {
+            return await _mongoDbService.Users
+                .Find(user =>
+                    user.Role == UserRoles.Prosumer &&
+                    user.Status == UserStatuses.DeactivationRequested)
+                .SortBy(user => user.FullName)
+                .ToListAsync();
+        }
     }
 }
