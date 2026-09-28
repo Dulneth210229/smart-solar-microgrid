@@ -63,6 +63,13 @@
             android:layout_height="wrap_content"
             android:text="Login" />
 
+        <Button
+            android:id="@+id/buttonOpenRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create Prosumer Account"
+            android:layout_marginTop="12dp" />
+
         <ProgressBar
             android:id="@+id/progressLogin"
             android:layout_width="wrap_content"

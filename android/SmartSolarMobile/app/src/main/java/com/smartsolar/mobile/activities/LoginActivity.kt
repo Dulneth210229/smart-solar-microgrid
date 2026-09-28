@@ -18,37 +18,27 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginActivity :
-    AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
-    private lateinit var databaseHelper:
-            DatabaseHelper
+    private lateinit var databaseHelper: DatabaseHelper
 
-    override fun onCreate(
-        savedInstanceState: Bundle?
-    ) {
-        super.onCreate(
-            savedInstanceState
-        )
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        setContentView(
-            R.layout.activity_login
-        )
+        setContentView(R.layout.activity_login)
 
-        databaseHelper =
-            DatabaseHelper(this)
+        // Initialize the local SQLite database helper.
+        databaseHelper = DatabaseHelper(this)
 
-        val existingSession =
-            databaseHelper.getSession()
+        // Check whether a logged-in session already exists.
+        val existingSession = databaseHelper.getSession()
 
         if (existingSession != null) {
-            navigateByRole(
-                existingSession.role
-            )
-
+            navigateByRole(existingSession.role)
             return
         }
 
+        // Get references to the login UI components.
         val editIdentifier =
             findViewById<EditText>(
                 R.id.editIdentifier
@@ -64,6 +54,12 @@ class LoginActivity :
                 R.id.buttonLogin
             )
 
+        // This is the new registration button added in Step 12.11.
+        val buttonOpenRegister =
+            findViewById<Button>(
+                R.id.buttonOpenRegister
+            )
+
         val progressLogin =
             findViewById<ProgressBar>(
                 R.id.progressLogin
@@ -74,6 +70,7 @@ class LoginActivity :
                 R.id.textError
             )
 
+        // Handle Login button click.
         buttonLogin.setOnClickListener {
 
             val identifier =
@@ -85,6 +82,7 @@ class LoginActivity :
                 editPassword.text
                     .toString()
 
+            // Validate required fields before calling the API.
             if (
                 identifier.isEmpty() ||
                 password.isEmpty()
@@ -105,10 +103,11 @@ class LoginActivity :
 
             val request =
                 LoginRequest(
-                    identifier,
-                    password
+                    identifier = identifier,
+                    password = password
                 )
 
+            // Call the C# Web API login endpoint using Retrofit.
             RetrofitClient
                 .apiService
                 .login(request)
@@ -117,10 +116,8 @@ class LoginActivity :
                         Callback<AuthResponse> {
 
                         override fun onResponse(
-                            call:
-                            Call<AuthResponse>,
-                            response:
-                            Response<AuthResponse>
+                            call: Call<AuthResponse>,
+                            response: Response<AuthResponse>
                         ) {
                             progressLogin.visibility =
                                 View.GONE
@@ -135,11 +132,11 @@ class LoginActivity :
                                 val auth =
                                     response.body()!!
 
+                                // Only Prosumers and Grid Operators
+                                // are allowed to use the mobile app.
                                 if (
-                                    auth.role !=
-                                    "PROSUMER" &&
-                                    auth.role !=
-                                    "GRID_OPERATOR"
+                                    auth.role != "PROSUMER" &&
+                                    auth.role != "GRID_OPERATOR"
                                 ) {
                                     textError.text =
                                         "Only Prosumer and Grid Operator accounts can use the mobile application."
@@ -147,6 +144,8 @@ class LoginActivity :
                                     return
                                 }
 
+                                // Save authenticated user information
+                                // and JWT locally in SQLite.
                                 val session =
                                     UserSession(
                                         userId =
@@ -173,10 +172,14 @@ class LoginActivity :
                                         session
                                     )
 
+                                // Send the authenticated user
+                                // to the correct role-based dashboard.
                                 navigateByRole(
                                     auth.role
                                 )
+
                             } else {
+
                                 textError.text =
                                     if (
                                         response.code() ==
@@ -190,10 +193,8 @@ class LoginActivity :
                         }
 
                         override fun onFailure(
-                            call:
-                            Call<AuthResponse>,
-                            throwable:
-                            Throwable
+                            call: Call<AuthResponse>,
+                            throwable: Throwable
                         ) {
                             progressLogin.visibility =
                                 View.GONE
@@ -207,11 +208,23 @@ class LoginActivity :
                     }
                 )
         }
+
+        // Open the Prosumer registration screen.
+        buttonOpenRegister.setOnClickListener {
+
+            val intent =
+                Intent(
+                    this,
+                    RegisterActivity::class.java
+                )
+
+            startActivity(intent)
+        }
     }
 
-    private fun navigateByRole(
-        role: String
-    ) {
+    // Navigates the logged-in user to the correct mobile dashboard.
+    private fun navigateByRole(role: String) {
+
         val intent =
             when (role) {
 
