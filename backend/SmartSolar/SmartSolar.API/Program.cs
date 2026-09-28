@@ -100,6 +100,18 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
+// Allow the local React development application to call the API.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactDevelopment", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Create required MongoDB indexes.
@@ -123,6 +135,8 @@ if (app.Environment.IsDevelopment())
 
 // Redirect HTTP requests to HTTPS.
 app.UseHttpsRedirection();
+
+app.UseCors("ReactDevelopment");
 
 // Authentication must execute before authorization.
 app.UseAuthentication();
