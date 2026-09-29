@@ -71,6 +71,30 @@ class ProsumerDashboardActivity :
         loadDashboard(
             session.token
         )
+
+        findViewById<Button>(
+            R.id.buttonStations
+        ).setOnClickListener {
+
+            startActivity(
+                Intent(
+                    this,
+                    StationListActivity::class.java
+                )
+            )
+        }
+
+        findViewById<Button>(
+            R.id.buttonBookings
+        ).setOnClickListener {
+
+            startActivity(
+                Intent(
+                    this,
+                    BookingsActivity::class.java
+                )
+            )
+        }
     }
 
     override fun onResume() {

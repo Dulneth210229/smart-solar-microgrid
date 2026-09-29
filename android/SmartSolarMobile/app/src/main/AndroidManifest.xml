@@ -43,6 +43,26 @@
         <activity
             android:name=".activities.ProfileActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".activities.StationListActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.BookingSlotsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.CreateReservationActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.BookingsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.EditReservationActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
