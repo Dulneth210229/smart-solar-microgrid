@@ -95,6 +95,18 @@ class ProsumerDashboardActivity :
                 )
             )
         }
+        findViewById<Button>(
+            R.id.buttonNearbyMap
+        ).setOnClickListener {
+
+            startActivity(
+                Intent(
+                    this,
+                    NearbyStationsMapActivity::
+                    class.java
+                )
+            )
+        }
     }
 
     override fun onResume() {
