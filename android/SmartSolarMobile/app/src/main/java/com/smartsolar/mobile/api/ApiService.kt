@@ -25,6 +25,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import com.smartsolar.mobile.models.QrTokenRequest
 import com.smartsolar.mobile.models.QrVerificationResponse
+import com.smartsolar.mobile.models.UpdateStationAvailabilityRequest
 
 interface ApiService {
 
@@ -188,4 +189,33 @@ interface ApiService {
         @Body
         request: QrTokenRequest
     ): Call<ReservationActionResponse>
+
+    @GET("Reservations/pending")
+    fun getPendingReservations(
+        @Header("Authorization")
+        authorization: String
+    ): Call<List<ReservationResponse>>
+
+
+    @PATCH("Reservations/{id}/approve")
+    fun approveReservation(
+        @Header("Authorization")
+        authorization: String,
+
+        @Path("id")
+        id: String
+    ): Call<ReservationActionResponse>
+
+
+    @PATCH("Stations/{id}/availability")
+    fun updateStationAvailability(
+        @Header("Authorization")
+        authorization: String,
+
+        @Path("id")
+        id: String,
+
+        @Body
+        request: UpdateStationAvailabilityRequest
+    ): Call<SolarStation>
 }

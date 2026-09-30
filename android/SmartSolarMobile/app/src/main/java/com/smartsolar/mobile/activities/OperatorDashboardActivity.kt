@@ -65,6 +65,31 @@ class OperatorDashboardActivity :
                 )
             )
         }
+
+        findViewById<Button>(
+            R.id.buttonOperatorReservations
+        ).setOnClickListener {
+
+            startActivity(
+                Intent(
+                    this,
+                    OperatorReservationsActivity::class.java
+                )
+            )
+        }
+
+
+        findViewById<Button>(
+            R.id.buttonOperatorStations
+        ).setOnClickListener {
+
+            startActivity(
+                Intent(
+                    this,
+                    OperatorStationsActivity::class.java
+                )
+            )
+        }
     }
 
     private fun returnToLogin(

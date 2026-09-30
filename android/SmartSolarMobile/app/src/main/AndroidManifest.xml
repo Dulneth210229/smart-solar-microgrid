@@ -91,6 +91,14 @@
         <activity
             android:name=".activities.OperatorQrScannerActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".activities.OperatorReservationsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.OperatorStationsActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
