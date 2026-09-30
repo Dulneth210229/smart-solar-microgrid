@@ -19,14 +19,15 @@ class ReservationAdapter(
         (ReservationResponse) -> Unit,
 
     private val onCancel:
+        (ReservationResponse) -> Unit,
+
+    private val onShowQr:
         (ReservationResponse) -> Unit
 
 ) : RecyclerView.Adapter<
         ReservationAdapter.ReservationViewHolder>() {
 
-    class ReservationViewHolder(
-        itemView: View
-    ) : RecyclerView.ViewHolder(
+    class ReservationViewHolder(itemView: View) : RecyclerView.ViewHolder(
         itemView
     ) {
 
@@ -76,6 +77,11 @@ class ReservationAdapter(
                 Button =
             itemView.findViewById(
                 R.id.buttonCancelReservation
+            )
+        val showQr:
+                Button =
+            itemView.findViewById(
+                R.id.buttonShowQr
             )
     }
 
@@ -128,6 +134,28 @@ class ReservationAdapter(
                     "PENDING" ||
                     reservation.status ==
                     "APPROVED"
+
+        val canShowQr =
+            reservation.status ==
+                    "APPROVED" &&
+                    !reservation.qrToken
+                        .isNullOrBlank()
+
+        holder.showQr.visibility =
+            if (canShowQr) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
+        holder.showQr.setOnClickListener {
+
+            if (canShowQr) {
+                onShowQr(
+                    reservation
+                )
+            }
+        }
 
         holder.actions.visibility =
             if (editable) {

@@ -52,6 +52,19 @@ class OperatorDashboardActivity :
                 databaseHelper
             )
         }
+
+        findViewById<Button>(
+            R.id.buttonScanQr
+        ).setOnClickListener {
+
+            startActivity(
+                Intent(
+                    this,
+                    OperatorQrScannerActivity::
+                    class.java
+                )
+            )
+        }
     }
 
     private fun returnToLogin(

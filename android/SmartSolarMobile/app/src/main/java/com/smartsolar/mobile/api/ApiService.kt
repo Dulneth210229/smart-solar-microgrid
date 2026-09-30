@@ -23,6 +23,8 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
+import com.smartsolar.mobile.models.QrTokenRequest
+import com.smartsolar.mobile.models.QrVerificationResponse
 
 interface ApiService {
 
@@ -166,5 +168,24 @@ interface ApiService {
 
         @Path("id")
         id: String
+    ): Call<ReservationActionResponse>
+
+    @POST("Transactions/verify-qr")
+    fun verifyQr(
+        @Header("Authorization")
+        authorization: String,
+
+        @Body
+        request: QrTokenRequest
+    ): Call<QrVerificationResponse>
+
+
+    @POST("Transactions/complete")
+    fun completeTransaction(
+        @Header("Authorization")
+        authorization: String,
+
+        @Body
+        request: QrTokenRequest
     ): Call<ReservationActionResponse>
 }
