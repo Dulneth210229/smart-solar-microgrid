@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F7FA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nearby Solar Stations"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textNearestStation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Finding your location..."
+            android:textColor="#6C757D"
+            android:layout_marginTop="4dp" />
+
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:id="@+id/layoutSelectedStation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="#FFFFFF"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/textMapStationName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Station"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textMapStationDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Station details"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/textMapStationDistance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Distance"
+            android:textColor="#6C757D"
+            android:layout_marginTop="4dp" />
+
+        <Button
+            android:id="@+id/buttonMapViewSlots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View Booking Slots"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonMapBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:layout_margin="10dp" />
+
+</LinearLayout>
