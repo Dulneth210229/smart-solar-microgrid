@@ -1,0 +1,61 @@
+body {
+  margin: 0;
+  background-color: #f5f7fa;
+  color: #212529;
+}
+
+.login-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fbff 0%, #eef5ff 100%);
+}
+
+.login-card {
+  border-radius: 18px;
+}
+
+.login-icon {
+  font-size: 3rem;
+}
+
+.dashboard-sidebar {
+  min-height: 100vh;
+  background: #212529;
+}
+
+.dashboard-sidebar .nav-link {
+  color: rgba(255, 255, 255, 0.75);
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+
+.dashboard-sidebar .nav-link:hover,
+.dashboard-sidebar .nav-link.active {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.stat-card {
+  border: 0;
+  border-radius: 14px;
+}
+.card {
+  border-radius: 14px;
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.85rem;
+}
+
+.table thead th {
+  white-space: nowrap;
+}
+
+@media (max-width: 767.98px) {
+  .dashboard-sidebar {
+    min-height: auto;
+  }
+
+  .dashboard-sidebar .nav {
+    margin-bottom: 1rem;
+  }
+}
