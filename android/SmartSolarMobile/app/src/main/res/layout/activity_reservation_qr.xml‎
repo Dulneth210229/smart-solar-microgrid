@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F7FA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Transaction QR"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show this QR to the Grid Operator"
+            android:textColor="#6C757D"
+            android:gravity="center"
+            android:layout_marginBottom="20dp" />
+
+        <ImageView
+            android:id="@+id/imageReservationQr"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:contentDescription="Reservation QR Code"
+            android:background="#FFFFFF"
+            android:padding="10dp" />
+
+        <TextView
+            android:id="@+id/textQrStation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Station"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="22dp" />
+
+        <TextView
+            android:id="@+id/textQrTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Booking Time"
+            android:gravity="center"
+            android:layout_marginTop="6dp" />
+
+        <TextView
+            android:id="@+id/textQrEnergy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Energy"
+            android:gravity="center"
+            android:layout_marginTop="6dp" />
+
+        <TextView
+            android:id="@+id/textQrType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Transfer Type"
+            android:gravity="center"
+            android:layout_marginTop="6dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="The Grid Operator will verify this QR with the Smart Solar server."
+            android:textColor="#6C757D"
+            android:gravity="center"
+            android:layout_marginTop="20dp" />
+
+        <Button
+            android:id="@+id/buttonQrBack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:layout_marginTop="24dp" />
+
+    </LinearLayout>
+
+</ScrollView>
