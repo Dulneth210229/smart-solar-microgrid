@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:padding="18dp"
+    android:layout_marginBottom="12dp">
+
+    <TextView
+        android:id="@+id/textStationName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Station"
+        android:textSize="19sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textStationLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Location"
+        android:textColor="#6C757D"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:id="@+id/textStationCapacity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Capacity"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/textStationAvailability"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Available Slots"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:id="@+id/textStationHours"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Opening Hours"
+        android:layout_marginTop="4dp" />
+
+    <Button
+        android:id="@+id/buttonViewSlots"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View Available Slots"
+        android:layout_marginTop="14dp" />
+
+</LinearLayout>
