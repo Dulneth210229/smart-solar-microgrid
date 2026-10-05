@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#FFFFFF"
+    android:layout_marginBottom="12dp">
+
+    <TextView
+        android:id="@+id/textOperatorReservationStation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Station"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textOperatorReservationProsumer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Prosumer"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/textOperatorReservationTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Time"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/textOperatorReservationEnergy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Energy"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/textOperatorReservationType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Type"
+        android:layout_marginTop="5dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp">
+
+        <Button
+            android:id="@+id/buttonOperatorApprove"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Approve" />
+
+        <Button
+            android:id="@+id/buttonOperatorCancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancel" />
+
+    </LinearLayout>
+
+</LinearLayout>
