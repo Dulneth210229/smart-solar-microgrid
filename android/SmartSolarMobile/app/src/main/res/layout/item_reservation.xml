@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:padding="16dp"
+    android:layout_marginBottom="12dp">
+
+    <TextView
+        android:id="@+id/textReservationStation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Station"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textReservationTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Time"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/textReservationEnergy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Energy"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/textReservationType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Type"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/textReservationStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Status"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp" />
+
+    <LinearLayout
+        android:id="@+id/layoutReservationActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp">
+
+        <Button
+            android:id="@+id/buttonEditReservation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Modify" />
+
+        <Button
+            android:id="@+id/buttonCancelReservation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancel" />
+
+        <Button
+            android:id="@+id/buttonShowQr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show Transaction QR"
+            android:visibility="gone"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
